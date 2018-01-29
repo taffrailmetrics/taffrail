@@ -1,15 +1,17 @@
 Taffrail: Kubernetes Metrics Aggregation for Python
 ===================================================
 
+
 Taffrail is a python package that automatically discovers metrics providers in a Kubernetes cluster and exposes them via a simple interface.
 You can easily add custom metrics providers as well as override existing metrics endpoints.
+
 
 Installation
 ------------
 
 Install taffrail using pip:
 
-`pip install taffrail`
+`$ pip install taffrail`
 
 Usage
 -----
@@ -29,15 +31,21 @@ metrics_client = MetricsClient(conf)
 
 ### Get all available metrics:
 
-`response = metrics_client.get_metrics()`
+```
+response = metrics_client.get_metrics()
+```
 
 ### Get all available sources:
 
-`response = metrics_client.get_sources()`
+```
+response = metrics_client.get_sources()
+```
 
 ### Get metrics for a specific source:
 
-`response = metrics_client.get_metrics_with_source('metrics-api')`
+```
+response = metrics_client.get_metrics_with_source('metrics-api')
+```
 
 ### Custom kube-state-metrics endpoint
 
