@@ -20,7 +20,7 @@ Create the client:
 
 ```
 from kubernetes import client, config
-from taffrail_client import MetricsClient
+from taffrail.taffrail_client import MetricsClient
 
 config.load_kube_config()
 conf = client.Configuration()
