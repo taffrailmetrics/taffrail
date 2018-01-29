@@ -1,2 +1,4 @@
 /taffrail/*.pyc
 .vscode
+dist
+taffrail.egg-info
