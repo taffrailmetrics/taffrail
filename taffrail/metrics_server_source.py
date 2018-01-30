@@ -28,19 +28,27 @@ class MetricsServerSource(object):
 
     def get_metrics(self):
         items = []
+        dict_obj = {}
+        dict_obj['name'] = self.name
+        dict_obj['items'] = []
 
         for path in self.resource_paths:
             response = self.rest_client.GET(self.endpoint + path)
             
             if response.status is 200:
                 json_dict = json.loads(response.data)
+                dict_obj['items'].append(json_dict)
                 metrics_obj = metrics.MetricsUtility().to_object(json_dict)
-                items.append(metrics_obj)
+                items.append(metrics_obj)    
 
-        return MetricsServerResponse(self.name, items)
+        return MetricsServerResponse(self.name, items, dict_obj)
 
 
-class MetricsServerResponse:
-    def __init__(self, name, items):
+class MetricsServerResponse(object):
+    def __init__(self, name, items, dict_obj):
         self.name = name
         self.items = items
+        self.dict = dict_obj
+
+    def to_dict(self):
+        return self.dict

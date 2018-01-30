@@ -43,7 +43,10 @@ class KubeStateMetricsSource(object):
         return KubeStateMetricsResponse(self.name, metrics_list)
 
 
-class KubeStateMetricsResponse:
+class KubeStateMetricsResponse(object):
     def __init__(self, name, items):
         self.name = name
         self.items = items
+    
+    def to_dict(self):
+        return KubeStateMetricsResponse(self.name, [ob.__dict__ for ob in self.items]).__dict__

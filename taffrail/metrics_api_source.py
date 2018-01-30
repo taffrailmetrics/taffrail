@@ -38,7 +38,11 @@ class MetricsApiSource(object):
         return MetricsApiResponse(self.name, metrics_list)
 
 
-class MetricsApiResponse:
+class MetricsApiResponse(object):
     def __init__(self, name, items):
         self.name = name
         self.items = items
+
+    def to_dict(self):
+        return MetricsApiResponse(self.name, [ob.__dict__ for ob in self.items]).__dict__
+    

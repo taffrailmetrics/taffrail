@@ -11,5 +11,3 @@ r2 = metrics_client.get_metrics_with_source('metrics-api')
 r3 = metrics_client.get_metrics_with_source('kube-state-metrics')
 all = metrics_client.get_metrics()
 print("done")
-
-

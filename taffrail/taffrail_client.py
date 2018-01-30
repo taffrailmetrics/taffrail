@@ -30,13 +30,17 @@ class MetricsClient(object):
         else:
             return None
 
-    def get_metrics(self):
+    def get_metrics(self, as_dict = False):
         response = {}
         response["items"] = []
 
         for source in self.sources:
             if source.enabled is True:
                 metrics = source.get_metrics()
+                
+                if as_dict is True:
+                    metrics = metrics.to_dict()
+                    
                 response["items"].append(metrics)
         
         return response

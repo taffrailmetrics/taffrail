@@ -9,7 +9,7 @@ class MetricsUtility:
         """
         def convert(item): 
             if isinstance(item, dict):
-                return type('instance', (), {k: convert(v) for k, v in item.iteritems()})
+                return type('instance', (object,), {k: convert(v) for k, v in item.iteritems()})
             if isinstance(item, list):
                 def yield_convert(item):
                     for index, value in enumerate(item):
