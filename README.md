@@ -43,7 +43,7 @@ response = metrics_client.get_sources()
 ### Get metrics for a specific source:
 
 ```
-response = metrics_client.get_metrics_with_source('metrics-api')
+response = metrics_client.get_metrics_with_source('heapster')
 ```
 
 ### Custom kube-state-metrics endpoint
