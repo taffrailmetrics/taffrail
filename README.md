@@ -64,3 +64,9 @@ Currently, taffrail supports the following metrics providers:
 * kube-state-metrics
 * heapster
 * metrics-server
+
+### Running inside Kubernetes
+
+See [Taffrail Server]
+
+[Taffrail Server]: https://github.com/taffrailmetrics/taffrailserver
