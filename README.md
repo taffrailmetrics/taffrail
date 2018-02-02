@@ -23,9 +23,8 @@ from kubernetes import client, config
 from taffrail.taffrail_client import MetricsClient
 
 config.load_kube_config()
-conf = client.Configuration()
 
-metrics_client = MetricsClient(conf)
+metrics_client = MetricsClient(client)
 ```
 
 
@@ -63,5 +62,5 @@ Available Sources
 Currently, taffrail supports the following metrics providers:
 
 * kube-state-metrics
-* metrics-api
+* heapster
 * metrics-server
