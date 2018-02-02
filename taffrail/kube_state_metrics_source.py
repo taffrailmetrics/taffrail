@@ -1,4 +1,3 @@
-from kubernetes import client
 from prometheus_client.parser import text_string_to_metric_families
 import json
 import os
@@ -6,37 +5,35 @@ import metrics
 
 class KubeStateMetricsSource(object):
     enabled = False
-    path_env_var = 'KUBE-STATE-METRICS-PATH'
+    endpoint = {"KUBE_STATE_METRICS_NAME": "kube-state-metrics:http-metrics", "KUBE_STATE_METRICS_NAMESPACE": "default", "KUBE_STATE_METRICS_PATH": "/metrics"}
 
-    def __init__(self, kubernetes_config):
+    def __init__(self, kubernetes_client):
         self.name = "kube-state-metrics"
-        self.endpoint = kubernetes_config.host + "/api/v1/namespaces/kube-system/services/kube-state-metrics:http-metrics/proxy/metrics"
-        self.config = kubernetes_config
+        self.api = kubernetes_client.CoreV1Api()
         self.__discover()
 
     def __discover(self):
-        if os.environ.has_key(KubeStateMetricsSource.path_env_var):
-            self.endpoint = self.config.host + os.environ['KUBE-STATE-METRICS-PATH']
-
-        self.rest_client = client.rest.RESTClientObject(self.config)
+        for env_var in self.endpoint:
+            if os.environ.has_key(env_var):
+                KubeStateMetricsSource.endpoint[env_var] = os.environ.get(env_var)
         
         try:
-            kube_state_metrics_response = self.rest_client.GET(self.endpoint)
+            self.api.connect_get_namespaced_service_proxy_with_path(KubeStateMetricsSource.endpoint['KUBE_STATE_METRICS_NAME'],
+                KubeStateMetricsSource.endpoint['KUBE_STATE_METRICS_NAMESPACE'], KubeStateMetricsSource.endpoint['KUBE_STATE_METRICS_PATH'])
         except Exception as err:
             return
 
-        kube_state_metrics_status = kube_state_metrics_response.status
-
-        if kube_state_metrics_status is 200:
-            self.enabled = True
+        self.enabled = True
 
     def get_metrics(self):
         metrics_list = []
-
-        kube_state_metrics_response = self.rest_client.GET(self.endpoint)
         
-        if kube_state_metrics_response.status is 200:
-            for family in text_string_to_metric_families(kube_state_metrics_response.data):
+        kube_state_metrics_response = self.api.connect_get_namespaced_service_proxy_with_path(KubeStateMetricsSource.endpoint['KUBE_STATE_METRICS_NAME'],
+                                        KubeStateMetricsSource.endpoint['KUBE_STATE_METRICS_NAMESPACE'],
+                                        KubeStateMetricsSource.endpoint['KUBE_STATE_METRICS_PATH'])
+        
+        if kube_state_metrics_response:
+            for family in text_string_to_metric_families(kube_state_metrics_response):
                 metrics_obj = metrics.MetricsUtility().to_object(family)
                 metrics_list.append(metrics_obj)
         

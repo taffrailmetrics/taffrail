@@ -8,7 +8,7 @@ setup(
           'prometheus_client'
       ],
     include_package_data=True,
-    version='0.5',
+    version='0.5.1',
     description='An aggregate metrics python client for Kubernetes',
     author='Taffrail',
     author_email='',

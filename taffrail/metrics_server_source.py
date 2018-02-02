@@ -1,30 +1,32 @@
 from kubernetes import client
 from collections import namedtuple
+import requests
+import urllib3
 import metrics
 import json
+import os
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class MetricsServerSource(object):
     enabled = False
     resource_paths = ['/nodes', '/pods']
-
-    def __init__(self, kubernetes_config):
+    endpoint = "/apis/metrics.k8s.io/v1beta1"
+    
+    def __init__(self, kubernetes_client):
         self.name = "metrics-server"
-        self.endpoint = kubernetes_config.host + "/apis/metrics.k8s.io/v1beta1"
-        self.config = kubernetes_config
+        self.config = kubernetes_client.Configuration()
         self.__discover()
 
     def __discover(self):
-        self.rest_client = client.rest.RESTClientObject(self.config)
-        
         try:
-            metrics_server_response = self.rest_client.GET(self.endpoint)
+            response = requests.get(self.config.host + self.endpoint, headers=self.config.api_key, verify=False, cert=self.config.cert_file)
+            if response.status_code is not 200:
+                return
         except Exception as err:
             return
 
-        metrics_server_status = metrics_server_response.status
-
-        if metrics_server_status is 200:
-            self.enabled = True
+        self.enabled = True
 
     def get_metrics(self):
         items = []
@@ -33,10 +35,10 @@ class MetricsServerSource(object):
         dict_obj['items'] = []
 
         for path in self.resource_paths:
-            response = self.rest_client.GET(self.endpoint + path)
+            response = requests.get(self.config.host + self.endpoint + path, headers=self.config.api_key, verify=False, cert=self.config.cert_file)
             
-            if response.status is 200:
-                json_dict = json.loads(response.data)
+            if response.status_code is 200:
+                json_dict = json.loads(response.content)
                 dict_obj['items'].append(json_dict)
                 metrics_obj = metrics.MetricsUtility().to_object(json_dict)
                 items.append(metrics_obj)    

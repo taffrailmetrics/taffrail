@@ -1,22 +1,22 @@
 from prometheus_client.parser import text_string_to_metric_families
 from metrics_server_source import MetricsServerSource
 from kube_state_metrics_source import KubeStateMetricsSource
-from metrics_api_source import MetricsApiSource
+from heapster_api_source import HeapsterApiSource
 import json
 
 class MetricsClient(object):
-    def __init__(self, kubernetes_config):
-        if not kubernetes_config:
-            raise Exception('kubernetes_config param cannot be null')
+    def __init__(self, kubernetes_client):
+        if not kubernetes_client:
+            raise Exception('kubernetes_client param cannot be null')
         else:
-            self.config = kubernetes_config
+            self.client = kubernetes_client
             self.__load_sources()
     
     def __load_sources(self):
         self.sources = []
-        self.sources.append(KubeStateMetricsSource(self.config))
-        self.sources.append(MetricsServerSource(self.config))
-        self.sources.append(MetricsApiSource(self.config))
+        self.sources.append(KubeStateMetricsSource(self.client))
+        self.sources.append(MetricsServerSource(self.client))
+        self.sources.append(HeapsterApiSource(self.client))
     
     def get_sources(self):
         return [source.name for source in self.sources]
