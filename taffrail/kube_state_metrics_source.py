@@ -5,7 +5,7 @@ import metrics
 
 class KubeStateMetricsSource(object):
     enabled = False
-    endpoint = {"KUBE_STATE_METRICS_NAME": "kube-state-metrics:http-metrics", "KUBE_STATE_METRICS_NAMESPACE": "default", "KUBE_STATE_METRICS_PATH": "/metrics"}
+    endpoint = {"KUBE_STATE_METRICS_NAME": "kube-state-metrics:http-metrics", "KUBE_STATE_METRICS_NAMESPACE": "kube-system", "KUBE_STATE_METRICS_PATH": "/metrics"}
 
     def __init__(self, kubernetes_client):
         self.name = "kube-state-metrics"
