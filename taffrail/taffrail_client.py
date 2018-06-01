@@ -1,6 +1,7 @@
 from prometheus_client.parser import text_string_to_metric_families
 from metrics_server_source import MetricsServerSource
 from kube_state_metrics_source import KubeStateMetricsSource
+from prometheus_metrics_source import PrometheusMetricsSource
 from heapster_api_source import HeapsterApiSource
 import json
 
@@ -17,6 +18,7 @@ class MetricsClient(object):
         self.sources.append(KubeStateMetricsSource(self.client))
         self.sources.append(MetricsServerSource(self.client))
         self.sources.append(HeapsterApiSource(self.client))
+        self.sources.append(PrometheusMetricsSource(self.client))
     
     def get_sources(self):
         return [source.name for source in self.sources]

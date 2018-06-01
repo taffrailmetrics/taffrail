@@ -14,7 +14,7 @@ class KubeStateMetricsSource(object):
 
     def __discover(self):
         for env_var in self.endpoint:
-            if os.environ.has_key(env_var):
+            if os.environ.get(env_var) is not None:
                 KubeStateMetricsSource.endpoint[env_var] = os.environ.get(env_var)
         
         try:
