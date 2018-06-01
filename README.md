@@ -43,7 +43,7 @@ response = metrics_client.get_sources()
 ### Get metrics for a specific source:
 
 ```
-response = metrics_client.get_metrics_with_source('heapster')
+response = metrics_client.get_metrics_with_source('prometheus')
 ```
 
 ### Custom kube-state-metrics endpoint
@@ -61,6 +61,7 @@ Available Sources
 
 Currently, taffrail supports the following metrics providers:
 
+* prometheus
 * kube-state-metrics
 * heapster
 * metrics-server
