@@ -1,7 +1,7 @@
 from prometheus_client.parser import text_string_to_metric_families
 import json
 import os
-import metrics
+from .metrics import MetricsUtility
 
 class KubeStateMetricsSource(object):
     enabled = False
@@ -34,7 +34,7 @@ class KubeStateMetricsSource(object):
         
         if kube_state_metrics_response:
             for family in text_string_to_metric_families(kube_state_metrics_response):
-                metrics_obj = metrics.MetricsUtility().to_object(family)
+                metrics_obj = MetricsUtility().to_object(family)
                 metrics_list.append(metrics_obj)
         
         return KubeStateMetricsResponse(self.name, metrics_list)

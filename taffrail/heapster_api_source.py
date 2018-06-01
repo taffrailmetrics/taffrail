@@ -1,7 +1,7 @@
 from kubernetes import client
 from prometheus_client.parser import text_string_to_metric_families
 import json
-import metrics
+from .metrics import MetricsUtility
 import os
 
 class HeapsterApiSource(object):
@@ -34,7 +34,7 @@ class HeapsterApiSource(object):
         
         if metrics_response:
             for family in text_string_to_metric_families(metrics_response):
-                metrics_obj = metrics.MetricsUtility().to_object(family)
+                metrics_obj = MetricsUtility().to_object(family)
                 metrics_list.append(metrics_obj)
         
         return HeapsterMetrics(self.name, metrics_list)
