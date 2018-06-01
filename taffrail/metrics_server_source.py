@@ -2,7 +2,7 @@ from kubernetes import client
 from collections import namedtuple
 import requests
 import urllib3
-import metrics
+from .metrics import MetricsUtility
 import json
 import os
 
@@ -40,7 +40,7 @@ class MetricsServerSource(object):
             if response.status_code is 200:
                 json_dict = json.loads(response.content)
                 dict_obj['items'].append(json_dict)
-                metrics_obj = metrics.MetricsUtility().to_object(json_dict)
+                metrics_obj = MetricsUtility().to_object(json_dict)
                 items.append(metrics_obj)    
 
         return MetricsServerResponse(self.name, items, dict_obj)
